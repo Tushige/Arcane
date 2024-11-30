@@ -1,0 +1,56 @@
+#root {
+  width: 100vw;
+  text-align: center;
+}
+
+.hero {
+  height: 100lvh;
+  overflow: hidden;
+  position: relative
+}
+
+.hero__slides {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1
+}
+
+.hero__hitArea {
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 100
+}
+
+.heroItem {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%
+}
+
+
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+

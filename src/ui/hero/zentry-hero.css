@@ -1,0 +1,139 @@
+.heroItem, .heroItem__content {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%
+}
+
+.heroItem__content {
+  background-color: var(--rui-colors-purple);
+  z-index: 1;
+  transform-origin: center;
+}
+
+.heroItem__inner {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  transform-origin: center;
+}
+
+.heroItem img,.heroItem video {
+  height: 100%;
+  left: 0;
+  -o-object-fit: cover;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  width: 100%
+}
+
+.heroItem__border, .heroItem__borderPath {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+  fill: none;
+  transform-origin: center;
+}
+
+.heroItem__borderPath {
+  stroke-width: 2px;
+}
+
+.hero {
+  height: 100lvh;
+  overflow: hidden;
+  position: relative
+}
+
+.hero__slides {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1
+}
+
+.hero__hitArea {
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 100
+}
+
+@media only screen and (min-width: 769px) {
+  .hero__hitArea {
+      width:20%
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .hero__hitArea {
+      top:60%;
+      width: 50%
+  }
+}
+
+.hero__content {
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 2
+}
+
+@media only screen and (max-width: 768px) {
+  .hero__content {
+      padding-bottom:2rem
+  }
+
+  .hero__content:after {
+      background: linear-gradient(0deg,rgba(0,0,0,.8) 25%,transparent);
+      bottom: 0;
+      height: 50%
+  }
+}
+
+.hero__content:after,.hero__content:before {
+  content: "";
+  position: absolute;
+  width: 100%
+}
+
+.hero__content:before {
+  background: linear-gradient(180deg,rgba(0,0,0,.6),transparent 75%);
+  height: 30%
+}
+
+.hero__contentInner {
+  color: var(--rui-colors-grey);
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
+  left: 0;
+  padding: 0 var(--sideMargin);
+  position: relative;
+  top: 0;
+  width: 100%;
+  z-index: 1
+}
+
+@media only screen and (max-width: 768px) {
+  .hero__contentInner {
+      flex-direction:column;
+      height: 100svh;
+      padding-bottom: 2rem
+  }
+}
