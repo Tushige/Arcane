@@ -136,6 +136,7 @@ export const HeroTestStack = ({ }) => {
          * remove previous - we need to undo the state of the previous videos because when we eventually cycle again, we will want to start from a clean slate
          */
         if (prevTarget) {
+          console.log(`resetting previous ${prevIdx}`)
           videoRefs.current[prevIdx].pause();
           gsap.set(prevTarget, {
             clipPath: `path('${emptyPath}')`,
@@ -158,7 +159,6 @@ export const HeroTestStack = ({ }) => {
       attr: {
         d: previewPath
       },
-      transform: "translate3d(0px,0px,0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)"
     });
     gsap.to(currTargetBorder, {
       attr: {
@@ -249,29 +249,29 @@ export const HeroTestStack = ({ }) => {
           ease: 'power1.inOut'
         }, duration);
       }
-      else {
-        // hide the preview
-        tl.set(target, {
-          clipPath: `path('${startPath}')`
-        }, 0)
-        .set(targetBorder, {
-          attr: {
-            d: startPath
-          }
-        }, 0)
-        .to(target, {
-          clipPath: `path('${emptyPath}')`,
-          duration,
-          ease: 'power1.inOut'
-        }, duration)
-        .to(targetBorder, {
-          attr: {
-            d: emptyPath
-          },
-          duration,
-          ease: 'power1.inOut',
-        }, duration)
-      }
+      // else {
+      //   // hide the preview
+      //   tl.set(target, {
+      //     clipPath: `path('${startPath}')`
+      //   }, 0)
+      //   .set(targetBorder, {
+      //     attr: {
+      //       d: startPath
+      //     }
+      //   }, 0)
+      //   .to(target, {
+      //     clipPath: `path('${emptyPath}')`,
+      //     duration,
+      //     ease: 'power1.inOut'
+      //   }, duration)
+      //   .to(targetBorder, {
+      //     attr: {
+      //       d: emptyPath
+      //     },
+      //     duration,
+      //     ease: 'power1.inOut',
+      //   }, duration)
+      // }
     })
     return () => {
       gsapContextRef.current.revert();
@@ -349,17 +349,22 @@ const HeroItem = ({
   svgPreviewPath: string
 }) => {
   const isPrevious = getNextIdx(idx) === selectedIdx;
+  const emptyPath = calculateSVGPath(window.innerWidth, window.innerHeight, 0, 0);
   let zIndex = 0;
+  let path = emptyPath;
   /**
    * we determine stacking order as follows : previous -> current -> next
    * everything else is not visible so their zIndex can be set to 0. They just have to be less than 1.
    */
   if (isPrevious) {
     zIndex = 0;
-  } else if (idx === selectedIdx) {
+    path = svgPath;
+  } else if (idx === selectedIdx || isPrevious) {
     zIndex = 1;
+    path = svgPath;
   } else if (idx === getNextIdx(selectedIdx)) {
     zIndex = 2;
+    path = svgPreviewPath;
   }
   return (
     <div
@@ -379,8 +384,8 @@ const HeroItem = ({
         style={{
           position: 'relative',
           display: (idx === selectedIdx || prevIdx === idx) ? 'block' : 'none',
-          boxSizing: 'border-box', // Ensure that borders don't affect the size,
-          clipPath: idx === selectedIdx ? `path('${svgPath}')` : `path('${svgPreviewPath}')`
+          boxSizing: 'border-box',
+          clipPath: `path('${path}')`
         }}
         data-idx={0}
       >
@@ -414,10 +419,9 @@ const HeroItem = ({
         <path
           id={`hero-border-${idx}`}
           className="heroItem__borderPath path-0"
-          stroke="black"
           fill="none"
+          stroke="black"
           strokeWidth="2px"
-          d={idx === selectedIdx ? svgPath : svgPreviewPath}
         />
       </svg>
     </div>
