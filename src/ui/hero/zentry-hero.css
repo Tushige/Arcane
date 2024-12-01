@@ -71,6 +71,11 @@
   z-index: 100
 }
 
+.special-font b {
+  font-family: "Zentry";
+  font-feature-settings: "ss01" on;
+}
+
 @media only screen and (min-width: 769px) {
   .hero__hitArea {
       width:20%
@@ -136,4 +141,64 @@
       height: 100svh;
       padding-bottom: 2rem
   }
+}
+
+.btnMain {
+  --bgColor: #FFE31A;
+  --color: white;
+  --heightBase: 2.8rem;
+  --height: calc(var(--heightBase)*1.4);
+  --halfHeight: calc(var(--height)/2);
+
+  align-items: center;
+  color: #000;
+  display: flex;
+  height: var(--height);
+  padding: 0 var(--halfHeight);
+  position: relative;
+  white-space: nowrap;
+  background-color: transparent;
+  text-transform: uppercase;
+}
+
+.btnMain__text {
+  display: block;
+  margin-bottom: 1px;
+  position: relative;
+  z-index: 1
+}
+
+.btnMain__text span {
+  display: inline-block;
+  will-change: transform;
+}
+
+.btnMain__shape,
+.btnMain__shapeIcon {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%
+}
+
+.btnMain__shapePath {
+  ----rui-textColor: hotpink;
+  --bg-color: gray;
+  fill: var(--bgColor,var(--rui-textColor));
+  stroke: none
+}
+.btnMain__icon span {
+  will-change: transform;
+}
+.btnMain__icon svg {
+  height: 100%;
+  left: 0;
+  position: relative;
+  top: 0;
+  width: 100%;
+}
+.textCaptionBtn {
+  line-height: 1;
+  letter-spacing: .02em;
 }

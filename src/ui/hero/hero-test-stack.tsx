@@ -2,6 +2,7 @@ import gsap from 'gsap';
 import './zentry-hero.css';
 import { useRef, useEffect, useState } from 'react';
 import { useGSAP } from '@gsap/react';
+import AppAnimatedButton from '../../components/app-animated-button';
 
 type VideoType = {
   src: string,
@@ -249,29 +250,29 @@ export const HeroTestStack = ({ }) => {
           ease: 'power1.inOut'
         }, duration);
       }
-      // else {
-      //   // hide the preview
-      //   tl.set(target, {
-      //     clipPath: `path('${startPath}')`
-      //   }, 0)
-      //   .set(targetBorder, {
-      //     attr: {
-      //       d: startPath
-      //     }
-      //   }, 0)
-      //   .to(target, {
-      //     clipPath: `path('${emptyPath}')`,
-      //     duration,
-      //     ease: 'power1.inOut'
-      //   }, duration)
-      //   .to(targetBorder, {
-      //     attr: {
-      //       d: emptyPath
-      //     },
-      //     duration,
-      //     ease: 'power1.inOut',
-      //   }, duration)
-      // }
+      else {
+        // hide the preview
+        tl.set(target, {
+          clipPath: `path('${startPath}')`
+        }, 0)
+        .set(targetBorder, {
+          attr: {
+            d: startPath
+          }
+        }, 0)
+        .to(target, {
+          clipPath: `path('${emptyPath}')`,
+          duration,
+          ease: 'power1.inOut'
+        }, duration)
+        .to(targetBorder, {
+          attr: {
+            d: emptyPath
+          },
+          duration,
+          ease: 'power1.inOut',
+        }, duration)
+      }
     })
     return () => {
       gsapContextRef.current.revert();
@@ -326,6 +327,15 @@ export const HeroTestStack = ({ }) => {
             />
           ))
         }
+      </div>
+      <div className="px-5 sm:px-10 z-[100] relative">
+        <h1 className="special-font text-left uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-white ">
+          Arca<b>n</b>e
+        </h1>
+        <p className="text-left font-bold text-white text-sm sm:text-xl lg:text-2xl">
+          Season 2 Out NOW
+        </p>
+        <AppAnimatedButton text="WATCH Now"/>
       </div>
     </div>
   );
