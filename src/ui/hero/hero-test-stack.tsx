@@ -1,8 +1,11 @@
 import gsap from 'gsap';
+import { ScrollTrigger } from "gsap/all";
 import './zentry-hero.css';
 import { useRef, useEffect, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import AppAnimatedButton from '../../components/app-animated-button';
+
+gsap.registerPlugin(ScrollTrigger);
 
 type VideoType = {
   src: string,
@@ -64,14 +67,14 @@ export const HeroTestStack = ({ }) => {
   const [prevIdx, setPrevIdx] = useState(-1);
   const [currIdx, setCurrIdx] = useState(0);
   const videoRefs = useRef([]);
-  const containerRef = useRef();
+  const videoRef = useRef();
   const [isHovering, setIsHovering] = useState(false);
   const [locked, setLocked] = useState(false)
   const gsapContextRef = useRef<gsap.Context>();
 
   const [svgPath, setSvgPath] = useState(calculateSVGPath(window.innerWidth, window.innerHeight, 0, 0));
   const [svgPreviewPath, setSVGPreviewPath] = useState(calculateSVGPath(window.innerWidth, window.innerHeight, Math.max(100, window.innerWidth/10), 10));
-  const { contextSafe } = useGSAP({scope: containerRef})
+  const { contextSafe } = useGSAP({scope: videoRef})
 
 
   const clickHandler = contextSafe( () => {
@@ -303,9 +306,35 @@ export const HeroTestStack = ({ }) => {
     }
   }, []);
 
+  /**
+   * scroll animation
+   */
+  useGSAP(() => {
+    gsap.set(videoRef.current, {
+      clipPath: "polygon(14% 0, 72% 0, 88% 90%, 0 95%)",
+      borderRadius: '0% 0% 40% 10%',
+      x: -Math.min(200, window.innerWidth/4)
+    });
+    gsap.from(videoRef.current, {
+      clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+      borderRadius: "0% 0% 0% 0%",
+      x: 0,
+      ease: "power1.inOut",
+      scrollTrigger: {
+        trigger: videoRef.current,
+        // start: "center center",
+        // end: "bottom center",
+        start: 'center center', // when the top of the trigger hits the top of the viewport
+        end: '+=500', // end after scrolling 500px beyond the start
+        scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar
+        // scrub: true,
+      },
+    });
+  })
+
   return (
     <div className="min-h-screen w-full relative">
-      <div ref={containerRef} className="hero__slides">
+      <div ref={videoRef} className="hero__slides">
         <div
           className="hero__hitArea"
           onClick={clickHandler}
