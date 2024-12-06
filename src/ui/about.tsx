@@ -36,6 +36,7 @@ const About = () => {
   const translateX = useRef(0)
   const translateY = useRef(0)
 
+  const imageScale = useSpring(useTransform(scrollYProgress, [0, 0.9], [1.3, 1]), {damping: 20, stiffness: 100});
   const scaleX = useSpring(useTransform(scrollYProgress, [0, 0.9], [DEFAULT_SCALE.x, window.innerWidth]),{ damping: 20, stiffness: 100 })
   const scaleY = useSpring(useTransform(scrollYProgress, [0, 0.9], [DEFAULT_SCALE.y, window.innerHeight]), {damping: 20, stiffness: 100});
 
@@ -65,23 +66,27 @@ const About = () => {
   const [currentScaleY, setCurrentScaleY] = useState(scaleY.get());
   const [currentRotationX, setCurrentRotationX] = useState(rotationX.get())
   const [currentRotationY, setCurrentRotationY] = useState(rotationY.get())
+  const [currentImageScale, setCurrentImageScale] = useState(imageScale.get());
 
   useEffect(() => {
-    const unsubscribeX = scaleX.on('change', (latestValue) => {
+    const unsubscribeScaleX = scaleX.on('change', (latestValue) => {
       setCurrentScaleX(latestValue);
     });
-    const unsubscribeY = scaleY.on('change', (latestValue) => {
+    const unsubscribeScaleY = scaleY.on('change', (latestValue) => {
       setCurrentScaleY(latestValue);
     });
+
+    const unsubscribeImageScale = imageScale.on('change', val => setCurrentImageScale(val))
 
     const unsubscribeRotationX = rotationX.on('change', v => setCurrentRotationX(v))
     const unsubscribeRotationY = rotationY.on('change', v => setCurrentRotationY(v))
 
     return () => {
-      unsubscribeX();
-      unsubscribeY();
+      unsubscribeScaleX();
+      unsubscribeScaleY();
       unsubscribeRotationX();
       unsubscribeRotationY();
+      unsubscribeImageScale();
     };
   }, [scaleX, scaleY]);
 
@@ -155,7 +160,7 @@ const About = () => {
             <div
               className="frame__content size-full absolute top-0 left-0"
               style={{
-                transform: `translate3d(${translateX.current}px, ${translateY.current}px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)`
+                transform: `translate3d(${translateX.current}px, ${translateY.current}px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(${currentImageScale})`
               }}
             >
               <img  
