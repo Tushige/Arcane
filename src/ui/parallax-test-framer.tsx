@@ -1,28 +1,40 @@
-import { useEffect, useRef, useState } from "react";
-import useMousePosition from "../hooks/use-mouse-position";
+import { useState, useEffect, useRef } from "react";
+import { generatePath } from "../utils/util";
 import { createClipPathGenerator } from "../utils/clip-path-generator";
 import { Euler, Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { useScroll, useSpring, useTransform } from "motion/react";
 
 const DEFAULT_SCALE = {x: 300, y: 500};
-const DEFAULT_ROTATION = {x: -Math.PI / 12, y: -Math.PI / 6};
+const DEFAULT_ROTATION = {x: Math.PI / 6, y: 0};
 
 const ROTATION_THRESHOLD = 0.8;
 
-const About = () => {
-  const mainImageRef = useRef<HTMLImageElement>();
+/**
+ * 
+ * we keep track of scroll progress inside the container.
+ * The scroll progress controls the scaling and rotation of the clip path
+ * 
+ * The scale has a 1:1 ratio with viewport so we scale to [vw, vh] to cover the whole viewport
+ */
+
+export const Parallax = () => {
+  const [svgPath, setSvgPath] = useState(generatePath([
+    {x: 100, y: 100},
+    {x: 300, y: 100},
+    {x: 300, y: 600},
+    {x: 100, y: 600},
+  ], 10));
+
+  const trapezoidRef = useRef(null);
   const containerRef = useRef(null);
-  const mainImagePathRef = useRef();
-  // the origin coordinates
-  const [positionVector, setPositionVector] = useState(new Vector3(window.innerWidth / 2, window.innerHeight / 2, 0));
-  const [svgPath, setSvgPath] = useState();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
   });
+  const [positionVector, setPositionVector] = useState(new Vector3(window.innerWidth / 2, window.innerHeight / 2, 0));
 
-  const mousePosition = useMousePosition()
   const generator = useRef();
   generator.current = createClipPathGenerator({focalLength: 800});
 
@@ -30,33 +42,26 @@ const About = () => {
     target: containerRef,
     offset: ['10% end', '90% end']
   })
-  
+
   const dx = useRef(0)
   const dy = useRef(0)
-  const translateX = useRef(0)
-  const translateY = useRef(0)
-
   const scaleX = useSpring(useTransform(scrollYProgress, [0, 0.9], [DEFAULT_SCALE.x, window.innerWidth]),{ damping: 20, stiffness: 100 })
   const scaleY = useSpring(useTransform(scrollYProgress, [0, 0.9], [DEFAULT_SCALE.y, window.innerHeight]), {damping: 20, stiffness: 100});
 
   const rotationX = useSpring(useTransform(() => {
     const scrollYProgressValue = scrollYProgress.get();
-    let mouseRotation = dx.current;
+    let mouseRotation = dy.current;
     if (scrollYProgressValue >= ROTATION_THRESHOLD) {
       mouseRotation = 0;
-      translateX.current = 0;
-      translateY.current = 0;
     }
     return DEFAULT_ROTATION.x - (scrollYProgressValue * DEFAULT_ROTATION.x + mouseRotation)
   }), {damping: 20, stiffness: 100});
 
   const rotationY = useSpring(useTransform(() => {
     const scrollYProgressValue = scrollYProgress.get();
-    let mouseRotation = dy.current;
+    let mouseRotation = dx.current;
     if (scrollYProgressValue >= ROTATION_THRESHOLD) {
       mouseRotation = 0;
-      translateX.current = 0;
-      translateY.current = 0;
     }
     return DEFAULT_ROTATION.y - (scrollYProgressValue * DEFAULT_ROTATION.y + mouseRotation)
   }), {damping: 20, stiffness: 100});
@@ -65,6 +70,14 @@ const About = () => {
   const [currentScaleY, setCurrentScaleY] = useState(scaleY.get());
   const [currentRotationX, setCurrentRotationX] = useState(rotationX.get())
   const [currentRotationY, setCurrentRotationY] = useState(rotationY.get())
+
+  // testing purposes only
+  // useEffect(() => {
+  //   const unsubscribe = scrollYProgress.on('change', (progress) => {
+  //     console.log(progress)
+  //   });
+  //   return () => unsubscribe();
+  // }, [scrollYProgress]);
 
   useEffect(() => {
     const unsubscribeX = scaleX.on('change', (latestValue) => {
@@ -95,7 +108,7 @@ const About = () => {
     transform.rotation.copy(new Euler(currentRotationX, currentRotationY, 0))
     generator.current.update();
     setSvgPath(generator.current.path.value);
-  }, [currentScaleX, currentScaleY, currentRotationX, currentRotationY]);
+  }, [currentScaleX, currentScaleY, currentRotationX, currentRotationY])
 
   /**
    * Hover Animation
@@ -105,21 +118,33 @@ const About = () => {
     const yOffset = (mousePosition.y - positionVector.y) / currentScaleY;
     dx.current = degToRad(-10 + 5 - 10 * yOffset) // top-bototm tilt
     dy.current = degToRad(-5 + 10 * xOffset); // left-right tilt
+  }, [mousePosition.x])
 
-    translateX.current = xOffset * 10;
-    translateY.current = yOffset * 10;
-  }, [mousePosition.x]);
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    setMousePosition({ x: clientX, y: clientY });
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   /**
    * on Page load, we attach a listener that will mold the currently selected video to the viewport 
    */
   useEffect(() => {
     const handleWindowResize = () => {
+      const w = window.innerWidth
+      const h = window.innerHeight
+
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight
-      });
-      setPositionVector(new Vector3(window.innerWidth / 2, window.innerHeight / 2, 0))
+      }); 
+      setPositionVector(new Vector3(w / 2, h / 2, 0));
     }
 
     handleWindowResize();
@@ -130,74 +155,30 @@ const About = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-slate-50 h-[300lvh]">
-      <h2 className="text-xl md:text-4xl font-medium uppercase">
-      The City of Progress
-      </h2>
-      <p className="font-zentry uppercase font-black text-4xl md:text-8xl lg:text-[8rem]">
-        Welcome to Pilltover
-      </p>
-
-      <div className="intro__frameWrap h-[100lvh] w-full sticky top-0">
-        <div className="frame size-full absolute top-0 left-0">
-          {/**
-           * the outer container for the main image
-           * on scroll, we expand the clip path to reveal the image
-           */}
-          <div
-            ref={mainImagePathRef}
-            id="mainImagePath"
-            className="frame__mask size-full absolute top-0 left-0"
+    <div ref={containerRef} id="container" className="size-full bg-fuchsia-900 h-[300lvh] relative">
+      <div className="sticky top-0 left-0 h-[100lvh]">
+        <div
+          className="cutout absolute left-0 top-0 size-full bg-green-400" 
+          ref={trapezoidRef}
+          style={{
+            clipPath: `path('${svgPath}')`,
+          }}
+        >
+          <img
+            src="img/pilltover.jpg"
+            width="100%"
+            height="100%"
+            alt="background image"
+            className="absolute left-0 top-0 size-full object-cover object-center" 
             style={{
-              clipPath: `path('${svgPath}')`
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#3498db",
             }}
-          >
-            <div
-              className="frame__content size-full absolute top-0 left-0"
-              style={{
-                transform: `translate3d(${translateX.current}px, ${translateY.current}px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)`
-              }}
-            >
-              <img  
-                ref={mainImageRef}
-                // src="img/arcane_season_1_cover_art_gkids_1590.webp"
-                src="img/pilltover.jpg"
-                width="100%"
-                height="100%"
-                alt="background image"
-                className="absolute left-0 top-0 size-full object-cover object-center" 
-              />
-            </div>
-            <svg
-              className="frame__border absolute size-full top-0 left-0"
-              stroke="#000000"
-              strokeWidth="10"
-              fill="none"
-            >
-              <path className="frame__borderPath" d={svgPath}></path>
-            </svg>
-
-          </div>
-          {/**
-           * the outer container for the floating elements
-           * on mouse hover, we shift their position to create a parallax fx
-           */}
-          <div
-            className="frame__outer size-full absolute top-0 left-0"
-            style={{
-              transform: `translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.3)`
-            }}
-          >
-            <img 
-              src="img/zentry/stones.webp"
-              width="100%"
-              height="100%"
-              className="absolute top-0 left-0 object-cover object-center"
-            />
-          </div>
+          />
         </div>
       </div>
     </div>
-  )
-}
-export default About;
+  );
+};
+

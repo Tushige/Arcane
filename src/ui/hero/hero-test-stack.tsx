@@ -4,6 +4,7 @@ import './zentry-hero.css';
 import { useRef, useEffect, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import AppAnimatedButton from '../../components/app-animated-button';
+import { calculateFullScreenSVGPath, calculateSVGPath } from '../../utils/util';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,21 +32,6 @@ const videos = [
   },
 ];
 
-
-const calculateSVGPath = (vw: number, vh: number, length: number, offset = 10) => {
-  const x = vw/2 + length/2;
-  const y = vh/2 - length /2;
-  const path = `M ${x} ${y} Q ${x+offset} ${y} ${x+offset} ${y+offset} L ${x+offset} ${y+length} Q ${x+offset} ${y+length+offset} ${x} ${y+length+offset} L ${x-length} ${y+length+offset} Q ${x-length-offset} ${y+length+offset} ${x-length-offset} ${y+length} L ${x-length-offset} ${y+offset} Q ${x-length-offset} ${y} ${x-length} ${y} Z`
-  return path;
-}
-
-const calculateFullScreenSVGPath = (vw: number, vh: number) => {
-  const x = vw;
-  const y = 0;
-  const offset = 1;
-  const path = `M ${0} ${0} Q ${x+offset} ${y} ${x+offset} ${y+offset} L ${x+offset} ${y+vh} Q ${x+offset} ${y+vh+offset} ${x} ${y+vh+offset} L ${x-vw} ${y+vh+offset} Q ${x-vw-offset} ${y+vh+offset} ${x-vw-offset} ${y+vh} L ${x-vw-offset} ${y+offset} Q ${x-vw-offset} ${y} ${x-vw} ${y} Z`
-  return path;
-}
 
 const calculateTilt = (mouseX: number, mouseY: number, elementWidth: number, elementHeight: number, vw: number, vh: number) => {
   const xOffset = mouseX - vw/2;
@@ -107,6 +93,9 @@ export const HeroTestStack = ({ }) => {
     const prevTargetBorder = `#hero-border-${prevIdx}`;
     const currTargetBorder = `#hero-border-${currIdx}`;
     const nextTargetBorder = `#hero-border-${getNextIdx(currIdx)}`;
+
+    console.log('fullScreenPath is')
+    console.log(fullScreenPath)
     videoRefs.current[currIdx].play();
     /**
      * VIDEO wrapper animation
@@ -141,7 +130,9 @@ export const HeroTestStack = ({ }) => {
          */
         if (prevTarget) {
           console.log(`resetting previous ${prevIdx}`)
-          videoRefs.current[prevIdx].pause();
+          if (videoRefs.current[prevIdx]) {
+            videoRefs.current[prevIdx].pause();
+          }
           gsap.set(prevTarget, {
             clipPath: `path('${emptyPath}')`,
           })
