@@ -4,6 +4,9 @@ import { createClipPathGenerator } from "../utils/clip-path-generator";
 import { Euler, Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { useScroll, useSpring, useTransform } from "motion/react";
+import { AppAnimatedTitle } from "../components/app-animated-title";
+import { AppAnimatedText } from "../components/app-animated-text";
+import { AppStaggeredText } from "../components/app-staggered-text";
 
 const DEFAULT_SCALE = {x: 300, y: 500};
 const DEFAULT_ROTATION = {x: -Math.PI / 12, y: -Math.PI / 6};
@@ -136,12 +139,9 @@ const About = () => {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-slate-50 h-[300lvh]">
-      <h2 className="text-xl md:text-4xl font-medium uppercase">
-      The City of Progress
-      </h2>
-      <p className="font-zentry uppercase font-black text-4xl md:text-8xl lg:text-[8rem]">
-        Welcome to Pilltover
-      </p>
+      <AppAnimatedTitle text="Welcome to Pilltover" />
+      {/* <AppStaggeredText/> */}
+      <AppAnimatedText/>
 
       <div className="intro__frameWrap h-[100lvh] w-full sticky top-0">
         <div className="frame size-full absolute top-0 left-0">
