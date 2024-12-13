@@ -10,6 +10,11 @@ export default {
         "robert-medium": ["robert-medium", "sans-serif"],
         "robert-regular": ["robert-regular", "sans-serif"],
       },
+      colors: {
+        text: {
+          'primary': '#e5e5e5'
+        }
+      }
     },
   },
   plugins: [],

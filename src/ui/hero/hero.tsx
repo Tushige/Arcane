@@ -347,7 +347,7 @@ export const Hero = ({ }) => {
           WEBFLIX
         </h2>
       </div>
-      <h2 className="absolute bottom-5 right-5 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-[#B00710] z-0">
+      <h2 className="absolute bottom-5 right-5 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-black z-0">
         WEBFLIX
       </h2>
     </div>

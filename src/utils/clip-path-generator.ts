@@ -120,14 +120,19 @@ const ClipPathGenerator = ({ focalLength = 800 } = {}) => {
     const updateClipPath = () => {
       // console.log('updating clip path')
         const { scale, rotation, position } = transformation;
+
+        // console.log(transformation)
         // console.log('scale is')
         // console.log(scale)
         Array.isArray(scale) ? scaleVector.fromArray(scale) : scaleVector.setScalar(scale);
         // Apply scaling and rotation to the vertices
         transformedVertices.forEach((vertex, index) => {
           const copied = vertex.copy(initialVertices[index]);
+        //   console.log(`copied: ${JSON.stringify(copied)}`)
           const multiplied = copied.multiply(scaleVector)
+        //   console.log(`multiplied: ${JSON.stringify(multiplied)}`)
           const rotated = multiplied.applyEuler(rotation);
+        //   console.log(`rotated: ${JSON.stringify(rotated)}`)
         });
         // Update the projection of the vertices
         updateVertices({

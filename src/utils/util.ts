@@ -1,3 +1,11 @@
+
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 export function throttle(func, wait) {
   let isLocked = false;
   return function(...args) {
@@ -9,7 +17,7 @@ export function throttle(func, wait) {
 }
 
 export const degToRad = (deg: number) => {
-  return Number.parseFloat(deg * Math.PI / 180).toFixed(2);
+  return Number.parseFloat(Number.parseFloat(deg * Math.PI / 180).toFixed(2));
 }
 
 export const calculateSVGPath = (vw: number, vh: number, length: number, offset = 10) => {

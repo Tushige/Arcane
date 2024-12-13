@@ -71,6 +71,14 @@ h1 {
   line-height: 1.1;
 }
 
+.snap-container {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+}
+
+.snap-item {
+  scroll-snap-align: center;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

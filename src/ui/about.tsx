@@ -6,7 +6,6 @@ import { degToRad } from "three/src/math/MathUtils.js";
 import { useScroll, useSpring, useTransform } from "motion/react";
 import { AppAnimatedTitle } from "../components/app-animated-title";
 import { AppAnimatedText } from "../components/app-animated-text";
-import { AppStaggeredText } from "../components/app-staggered-text";
 
 const DEFAULT_SCALE = {x: 300, y: 500};
 const DEFAULT_ROTATION = {x: -Math.PI / 12, y: -Math.PI / 6};
@@ -32,7 +31,7 @@ const About = () => {
   const {scrollYProgress} = useScroll({
     target: containerRef,
     offset: ['10% end', '90% end']
-  })
+  });
   
   const dx = useRef(0)
   const dy = useRef(0)
@@ -138,10 +137,10 @@ const About = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-slate-50 h-[300lvh]">
-      <AppAnimatedTitle text="Welcome to Pilltover" />
+    <div ref={containerRef} className="min-h-screen h-[300lvh]">
+      <AppAnimatedTitle text="Welcome to Pilltover" className="text-text-primary"/>
       {/* <AppStaggeredText/> */}
-      <AppAnimatedText/>
+      <AppAnimatedText text="The City of Progress" className="text-text-primary"/>
 
       <div className="intro__frameWrap h-[100lvh] w-full sticky top-0">
         <div className="frame size-full absolute top-0 left-0">
@@ -166,7 +165,7 @@ const About = () => {
               <img  
                 ref={mainImageRef}
                 // src="img/arcane_season_1_cover_art_gkids_1590.webp"
-                src="img/pilltover.jpg"
+                src="img/pilltover3.jpg"
                 width="100%"
                 height="100%"
                 alt="background image"
@@ -175,8 +174,8 @@ const About = () => {
             </div>
             <svg
               className="frame__border absolute size-full top-0 left-0"
-              stroke="#000000"
-              strokeWidth="10"
+              stroke="#e5e5e5"
+              strokeWidth="2"
               fill="none"
             >
               <path className="frame__borderPath" d={svgPath}></path>
