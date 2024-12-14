@@ -3,15 +3,45 @@ import { useState } from "react"
 import { cn } from "../utils/util"
 
 type props = {
-  text: string
+  text: string,
+  className?: string,
+  animated: boolean,
 }
 
-export const AppAnimatedText = ({text, className, ...props}: {text: string, className?: string}) => {
+export const AppAnimatedText = ({text, className, animated, ...props}: props) => {
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
   });
   const textArr = text.split(' ')
+  if (!animated) {
+    return (
+      <div
+        className={cn("", className)}
+        style={{
+          perspective: '1000px',
+          contain: 'layout'
+        }}
+        {...props}
+      >
+        <h2
+          className="relative font-general text-sm md:text-md font-medium uppercase tracking-wide mb-10"
+        >
+          <p className="z-[1] special-font font-zentry uppercase font-black text-4xl md:text-8xl lg:text-[8rem]">
+            {
+              textArr.map((word, i) => (
+                <span
+                  key={i}
+                >
+                  {word}{' '}
+                </span>
+              ))
+            }
+          </p>
+        </h2>
+      </div>
+    )
+  }
   return (
     <div
       className={cn("", className)}

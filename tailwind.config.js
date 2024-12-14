@@ -9,6 +9,7 @@ export default {
         "circular-web": ["circular-web", "sans-serif"],
         "robert-medium": ["robert-medium", "sans-serif"],
         "robert-regular": ["robert-regular", "sans-serif"],
+        p2p: ['p2p', "sans-serif"],
       },
       colors: {
         text: {

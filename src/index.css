@@ -33,6 +33,11 @@ body {
     font-family: "zentry";
     src: url("/fonts/zentry-regular.woff2") format("woff2");
   }
+
+  @font-face {
+    font-family: "p2p";
+    src: url("/fonts/PressStart2P-Regular.ttf") format("truetype");
+  }
 }
 
 .mask-clip-path {

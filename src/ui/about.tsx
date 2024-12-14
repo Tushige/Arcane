@@ -3,9 +3,10 @@ import useMousePosition from "../hooks/use-mouse-position";
 import { createClipPathGenerator } from "../utils/clip-path-generator";
 import { Euler, Vector3 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
-import { useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { AppAnimatedTitle } from "../components/app-animated-title";
 import { AppAnimatedText } from "../components/app-animated-text";
+import { AppRevealingText } from "../components/app-revealing-text";
 
 const DEFAULT_SCALE = {x: 300, y: 500};
 const DEFAULT_ROTATION = {x: -Math.PI / 12, y: -Math.PI / 6};
@@ -42,6 +43,7 @@ const About = () => {
   const scaleX = useSpring(useTransform(scrollYProgress, [0, 0.9], [DEFAULT_SCALE.x, window.innerWidth]),{ damping: 20, stiffness: 100 })
   const scaleY = useSpring(useTransform(scrollYProgress, [0, 0.9], [DEFAULT_SCALE.y, window.innerHeight]), {damping: 20, stiffness: 100});
 
+  const titleY = useSpring(useTransform(scrollYProgress, [0.9, 1], [0, -300]), {damping: 20, stiffness: 100});
   const rotationX = useSpring(useTransform(() => {
     const scrollYProgressValue = scrollYProgress.get();
     let mouseRotation = dx.current;
@@ -70,7 +72,10 @@ const About = () => {
   const [currentRotationY, setCurrentRotationY] = useState(rotationY.get())
   const [currentImageScale, setCurrentImageScale] = useState(imageScale.get());
 
-  useEffect(() => {
+  /**
+   * update states based on motion value changes
+   */
+  useEffect(() => { 
     const unsubscribeScaleX = scaleX.on('change', (latestValue) => {
       setCurrentScaleX(latestValue);
     });
@@ -82,7 +87,6 @@ const About = () => {
 
     const unsubscribeRotationX = rotationX.on('change', v => setCurrentRotationX(v))
     const unsubscribeRotationY = rotationY.on('change', v => setCurrentRotationY(v))
-
     return () => {
       unsubscribeScaleX();
       unsubscribeScaleY();
@@ -137,13 +141,20 @@ const About = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen h-[300lvh]">
-      <AppAnimatedTitle text="Welcome to Pilltover" className="text-text-primary"/>
-      {/* <AppStaggeredText/> */}
-      <AppAnimatedText text="The City of Progress" className="text-text-primary"/>
+    <div ref={containerRef} className="relative min-h-screen h-[300lvh]">
+      <motion.div
+        className="sticky top-0 z-[0]"
+        style={{
+          y: titleY
+        }}
+      >
+        <AppAnimatedTitle animated={true} text="Welcome to Piltover" className="text-text-primary"/>
+        <AppAnimatedText animated={true} text="The City of Progress" className="text-text-primary"/>
+      </motion.div>
 
       <div className="intro__frameWrap h-[100lvh] w-full sticky top-0">
         <div className="frame size-full absolute top-0 left-0">
+
           {/**
            * the outer container for the main image
            * on scroll, we expand the clip path to reveal the image
@@ -164,7 +175,6 @@ const About = () => {
             >
               <img  
                 ref={mainImageRef}
-                // src="img/arcane_season_1_cover_art_gkids_1590.webp"
                 src="img/pilltover3.jpg"
                 width="100%"
                 height="100%"
@@ -180,7 +190,21 @@ const About = () => {
             >
               <path className="frame__borderPath" d={svgPath}></path>
             </svg>
-
+            <div className="absolute top-[50%] right-[10%] z-[1000]">
+              <AppRevealingText
+                className="text-white text-2xl font-medium uppercase tracking-wide font-p2p"
+                containerId={'mainImagePath'}
+              />
+            </div>
+            <motion.div
+              className="sticky top-0 z-[1]"
+              style={{
+                y: titleY
+              }}
+            >
+              <AppAnimatedTitle text="Welcome to Piltover" className="text-blue-500"/>
+              <AppAnimatedText text="The City of Progress" className="text-blue-500 z-[1001]"/>
+            </motion.div>
           </div>
           {/**
            * the outer container for the floating elements
@@ -189,17 +213,21 @@ const About = () => {
           <div
             className="frame__outer size-full absolute top-0 left-0"
             style={{
-              transform: `translate3d(0px, 0px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.3)`
+              transform: `translate3d(${-translateX.current}px, ${-translateY.current}px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.3)`
             }}
           >
             <img 
               src="img/zentry/stones.webp"
               width="100%"
               height="100%"
-              className="absolute top-0 left-0 object-cover object-center"
+              className="absolute top-[10%] left-0 object-cover object-center"
             />
           </div>
         </div>
+
+        {/* <div className="absolute top-[50%] right-[10%] z-[-1]">
+         <AppRevealingText className="text-blue-400 text-2xl font-medium uppercase tracking-wide font-general"/>
+        </div> */}
       </div>
     </div>
   )

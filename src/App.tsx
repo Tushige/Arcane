@@ -1,9 +1,6 @@
 import './App.css';
 import About from './ui/about';
-import { Carousel } from './ui/carousel/carousel';
 import CharacterGrid from './ui/character-grid/character-grid';
-import { Characters } from './ui/characters/characters';
-import { CharactersJS } from './ui/characters/characters-js';
 import { Hero } from './ui/hero/hero';
 
 function App() {
@@ -14,9 +11,6 @@ function App() {
       <About/>  
       <div className="mt-[12rem]" />
       <CharacterGrid/> 
-      <div className="min-h-screen">
-        more content
-      </div>
     </main>
   );
 }
