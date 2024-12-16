@@ -5,7 +5,8 @@ import { useRef, useEffect, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import AppAnimatedButton from '../../components/app-animated-button';
 import { calculateFullScreenSVGPath, calculateSVGPath } from '../../utils/util';
-import { AppButtonFrequency } from '../../components/app-button-frequency/app-button-frequency';
+import { AppLoader } from '../../components/app-loader/app-loader';
+import { AnimatePresence, motion } from 'motion/react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -44,6 +45,7 @@ export const Hero = ({ }) => {
   });
   const [prevIdx, setPrevIdx] = useState(-1);
   const [currIdx, setCurrIdx] = useState(0);
+  const [numVideosLoaded, setNumVideosLoaded] = useState(0);
   const videoRefs = useRef([]);
   const videoRef = useRef();
   const [isHovering, setIsHovering] = useState(false);
@@ -310,8 +312,31 @@ export const Hero = ({ }) => {
     });
   })
 
+  const handleVideoLoaded = () => {
+    setNumVideosLoaded(prev => prev + 1);
+  }
+  useEffect(() => {
+    if (numVideosLoaded === videos.length) {
+      console.log('ALL VIDEO HAVE BEEN LOADED')
+    }
+  }, [numVideosLoaded]);
   return (
     <div className="min-h-screen w-full relative">
+      <AnimatePresence>
+        {
+          numVideosLoaded < videos.length && (
+            <motion.div
+              exit={{
+                scale: 0,
+                opacity: 0.3,
+                duration: 3
+              }}
+              className="min-h-screen bg-red-500 flex justify-center items-center relative z-[100]">
+              <AppLoader/>
+            </motion.div>
+          )
+        }
+      </AnimatePresence>
       <div ref={videoRef} className="hero__slides">
         <div
           className="hero__hitArea"
@@ -331,6 +356,7 @@ export const Hero = ({ }) => {
               videoRefs={videoRefs}
               svgPath={svgPath}
               svgPreviewPath={svgPreviewPath}
+              handleVideoLoaded={handleVideoLoaded}
             />
           ))
         }
@@ -361,7 +387,8 @@ const HeroItem = ({
   prevIdx,
   videoRefs,
   svgPath,
-  svgPreviewPath
+  svgPreviewPath,
+  handleVideoLoaded
 }: {
   video: VideoType,
   idx: number,
@@ -369,7 +396,8 @@ const HeroItem = ({
   prevIdx: number,
   videoRefs: React.MutableRefObject<HTMLDivElement[]>,
   svgPath: string,
-  svgPreviewPath: string
+  svgPreviewPath: string,
+  handleVideoLoaded: () => void
 }) => {
   const isPrevious = getNextIdx(idx) === selectedIdx;
   const emptyPath = calculateSVGPath(window.innerWidth, window.innerHeight, 0, 0);
@@ -431,6 +459,7 @@ const HeroItem = ({
             preload="metadata"
             poster={video.poster}
             src={video.src}
+            onLoadedData={handleVideoLoaded}
           />
         </div>
       </div>
