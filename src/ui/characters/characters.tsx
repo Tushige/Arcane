@@ -33,15 +33,6 @@ export const Characters = () => {
   const currIdx = useTransform(scrollYProgress, [0, 1], [0, data.length-1]);
 
   useEffect(() => {
-    const unsubscribeCurrIdx = currIdx.on('change', val => {
-      console.log(`currIdx: ${val}`)
-    })
-    return () => {
-      unsubscribeCurrIdx();
-    }
-  }, [currIdx])
-
-  useEffect(() => {
     const resizeHandler = () => {
       setTopTextHeight(topTextRef.current.getBoundingClientRect().height);
     }

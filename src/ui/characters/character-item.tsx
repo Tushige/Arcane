@@ -100,7 +100,6 @@ export function CharacterItem ({src, text, description, containerRef, i}: {src: 
     const unsubscribeRotationX = rotateX.on('change', val => setCurrentRotationX(val));
     const unsubscribeRotationY = rotateY.on('change', val => setCurrentRotationY(val));
     const unsubscribeScaleX = scaleX.on('change', val => {
-      console.log(`scale: ${val}`)
       setCurrentScaleX(val)
     });
     const unsubscribeScaleY = scaleY.on('change', val => setCurrentScaleY(val));

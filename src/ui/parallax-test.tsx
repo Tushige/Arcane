@@ -121,12 +121,6 @@ export const Parallax = () => {
         end: '+=1000',
         scrub: 1, // smooth scrubbing, takes 1 second to "catch up" to the scrollbar,
       },
-      onStart: () => {
-        console.log('starting scroll animation')
-      },
-      onComplete: () => {
-        console.log('scroll animation complete')
-      },
       onUpdate: (arg) => {
         const {transform} = generator.current;
         transform.scale = [scaleVector.current.x, scaleVector.current.y, scaleVector.current.z];

@@ -33,7 +33,6 @@ export const AppRevealingText = forwardRef(({text, className, containerId}) => {
     Splitting({target: contentRef.current})
     const chars = contentRef.current.querySelectorAll('.char');
     chars.forEach(char => gsap.set(char.parentNode, { perspective: 1000 }));
-    console.log(chars)
     gsap.fromTo(
       chars,
       {

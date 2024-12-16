@@ -5,6 +5,7 @@ import { useRef, useEffect, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import AppAnimatedButton from '../../components/app-animated-button';
 import { calculateFullScreenSVGPath, calculateSVGPath } from '../../utils/util';
+import { AppButtonFrequency } from '../../components/app-button-frequency/app-button-frequency';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -118,7 +119,6 @@ export const Hero = ({ }) => {
          * remove previous - we need to undo the state of the previous videos because when we eventually cycle again, we will want to start from a clean slate
          */
         if (prevTarget) {
-          console.log(`resetting previous ${prevIdx}`)
           if (videoRefs.current[prevIdx]) {
             videoRefs.current[prevIdx].pause();
           }
@@ -343,9 +343,9 @@ export const Hero = ({ }) => {
         </p>
         <AppAnimatedButton text="WATCH Now"/>
       </div>
-        <h2 className="absolute bottom-5 right-5 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-[#E50914] z-[10]">
-          WEBFLIX
-        </h2>
+      <h2 className="absolute bottom-5 right-5 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-[#E50914] z-[10]">
+        WEBFLIX
+      </h2>
       </div>
       <h2 className="absolute bottom-5 right-5 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-black z-0">
         WEBFLIX

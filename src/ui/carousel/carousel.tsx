@@ -93,14 +93,9 @@ export const Carousel = () => {
   }, [iteration, galleryRef.current]);
 
   const scrubTo = (totalTime) => {
-    console.log(`totalTime: ${totalTime}`)
-    console.log(`end: ${triggerRef.current.end}`)
-    console.log(`start: ${triggerRef.current.start}`)
     const seamlessLoop = seamlessLoopRef.current;
     const progress = (totalTime - seamlessLoop.duration() * iteration) / seamlessLoop.duration();
-    console.log(`progress: ${progress}`)
     const scrollToTime = triggerRef.current.start + progress * (triggerRef.current.end - triggerRef.current.start);
-    console.log(`scrollTO: ${scrollToTime}`)
     triggerRef.current.scroll(scrollToTime);
   } 
 
