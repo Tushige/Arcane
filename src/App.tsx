@@ -1,5 +1,4 @@
 import './App.css';
-import { AppButtonFrequency } from './components/app-button-frequency/app-button-frequency';
 import { AppNavBar } from './components/app.navbar';
 import About from './ui/about';
 import CharacterGrid from './ui/character-grid/character-grid';

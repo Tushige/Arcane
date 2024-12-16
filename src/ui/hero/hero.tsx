@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from "gsap/all";
 import './zentry-hero.css';
-import { useRef, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import AppAnimatedButton from '../../components/app-animated-button';
 import { calculateFullScreenSVGPath, calculateSVGPath } from '../../utils/util';
@@ -48,12 +48,8 @@ export const Hero = ({ }) => {
   const [numVideosLoaded, setNumVideosLoaded] = useState(0);
   const videoRefs = useRef([]);
   const videoRef = useRef();
-  const [isHovering, setIsHovering] = useState(false);
   const [locked, setLocked] = useState(false)
   const gsapContextRef = useRef<gsap.Context>();
-
-  const [svgPath, setSvgPath] = useState(calculateSVGPath(window.innerWidth, window.innerHeight, 0, 0));
-  const [svgPreviewPath, setSVGPreviewPath] = useState(calculateSVGPath(window.innerWidth, window.innerHeight, Math.max(100, window.innerWidth/10), 10));
   const { contextSafe } = useGSAP({scope: videoRef})
 
 
@@ -71,7 +67,8 @@ export const Hero = ({ }) => {
   });
 
   /**
-   * On page load, the current video expands to fill the full viewport
+   * On page load, the current video expands to fill the full viewport.
+   * After the current video expands, the next video expands to the preview shape
    */
   useGSAP(() => {
     const w = window.innerWidth;
@@ -84,11 +81,13 @@ export const Hero = ({ }) => {
     const prevTarget = `#hero-cut-${prevIdx}`;
     const currTarget = `#hero-cut-${currIdx}`;  
     const nextTarget = `#hero-cut-${getNextIdx(currIdx)}`;
+
     const prevTargetBorder = `#hero-border-${prevIdx}`;
     const currTargetBorder = `#hero-border-${currIdx}`;
     const nextTargetBorder = `#hero-border-${getNextIdx(currIdx)}`;
 
     videoRefs.current[currIdx].play();
+    setLocked(true);
     /**
      * VIDEO wrapper animation
      */
@@ -138,8 +137,8 @@ export const Hero = ({ }) => {
 
     /**
      * BORDER PATH animation
+     * on click, the border animates from preview path to full screen
      */
-    // BUG : this displays on page load and lingers for a few seconds. 
     gsap.set(currTargetBorder, {
       display: 'block',
       attr: {
@@ -174,121 +173,6 @@ export const Hero = ({ }) => {
   }, [currIdx, windowSize.width]);
 
   /**
-   * Hover animation
-   */
-  useGSAP(() => {
-    if (locked) return;
-    if (gsapContextRef && gsapContextRef.current) {
-      gsapContextRef.current.revert();
-    }
-    gsapContextRef.current = gsap.context(() => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const emptyPath = calculateSVGPath(w, h, 0, 0);
-      // preview shape
-      const startPath = calculateSVGPath(w, h, Math.max(100, w/10), 10);
-      const endPath = calculateSVGPath(w, h, Math.max(100, w/10)-20, 10);
-      const nextIdx = getNextIdx(currIdx);
-
-      const target = `#hero-cut-${nextIdx}`;
-      const targetBorder = `#hero-border-${nextIdx}`;
-      const tl = gsap.timeline();
-      const duration = 0.7;
-
-      if (isHovering) {
-        tl
-        // tl.set(target, {
-        //   clipPath: `path('${emptyPath}')`,
-        // })
-        // tl.set(targetBorder, {
-        //   attr: {
-        //     d: emptyPath
-        //   }
-        // })
-        .to(target, {
-          clipPath: `path('${startPath}')`,
-          duration,
-          ease: 'power1.inOut',
-        }, 0)
-        .to(targetBorder, {
-          attr: {
-            d: startPath
-          },
-          duration,
-          ease: 'power1.inOut',
-        }, 0)
-        // Continue both animations simultaneously
-        .to(target, {
-          clipPath: `path('${endPath}')`,
-          yoyo: true,
-          repeat: -1,
-          duration,
-          ease: 'power1.inOut'
-        }, duration)
-        .to(targetBorder, {
-          attr: {
-            d: endPath
-          },
-          yoyo: true,
-          repeat: -1,
-          duration,
-          ease: 'power1.inOut'
-        }, duration);
-      }
-      else {
-        // hide the preview
-        tl.set(target, {
-          clipPath: `path('${startPath}')`
-        }, 0)
-        .set(targetBorder, {
-          attr: {
-            d: startPath
-          }
-        }, 0)
-        .to(target, {
-          clipPath: `path('${emptyPath}')`,
-          duration,
-          ease: 'power1.inOut'
-        }, duration)
-        .to(targetBorder, {
-          attr: {
-            d: emptyPath
-          },
-          duration,
-          ease: 'power1.inOut',
-        }, duration)
-      }
-    })
-    return () => {
-      gsapContextRef.current.revert();
-    }
-  }, [isHovering, locked]);
-
-  /**
-   * on Page load, we attach a listener that will mold the currently selected video to the viewport 
-   */
-  useEffect(() => {
-    const handleWindowResize = () => {
-      const w = window.innerWidth
-      const h = window.innerHeight
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-      const path = calculateFullScreenSVGPath(w, h);
-      const previewPath = calculateSVGPath(w, h, Math.max(100, w/10)-10, 10);
-      setSvgPath(path);
-      setSVGPreviewPath(previewPath);
-    }
-
-    handleWindowResize();
-    window.addEventListener('resize', handleWindowResize);
-    return () => {
-      window.removeEventListener('resize', handleWindowResize);
-    }
-  }, []);
-
-  /**
    * scroll animation
    */
   useGSAP(() => {
@@ -312,14 +196,135 @@ export const Hero = ({ }) => {
     });
   })
 
+  const handleMouseEnter = () => {
+    if (locked) return;
+    if (gsapContextRef && gsapContextRef.current) {
+      gsapContextRef.current.revert();
+    }
+    gsapContextRef.current = gsap.context(() => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const emptyPath = calculateSVGPath(w, h, 0, 0);
+      const previewPath = calculateSVGPath(w, h, Math.max(100, w/10), 10);
+
+      const smallerPreviewPath = calculateSVGPath(w, h, Math.max(100, w/10)-20, 10);
+      const nextIdx = getNextIdx(currIdx);
+
+      const target = `#hero-cut-${nextIdx}`;
+      const targetBorder = `#hero-border-${nextIdx}`;
+      const tl = gsap.timeline();
+      const duration = 0.7;
+      tl.set(target, {
+        clipPath: `path('${emptyPath}')`,
+      })
+      tl.set(targetBorder, {
+        attr: {
+          d: emptyPath
+        }
+      })
+
+      .to(target, {
+        clipPath: `path('${previewPath}')`,
+        duration,
+        ease: 'power1.inOut',
+      }, 0)
+      .to(targetBorder, {
+        attr: {
+          d: previewPath
+        },
+        duration,
+        ease: 'power1.inOut',
+      }, 0)
+      // Continue both animations simultaneously
+      .to(target, {
+        clipPath: `path('${smallerPreviewPath}')`,
+        yoyo: true,
+        repeat: -1,
+        duration,
+        ease: 'power1.inOut'
+      }, duration)
+      .to(targetBorder, {
+        attr: {
+          d: smallerPreviewPath
+        },
+        yoyo: true,
+        repeat: -1,
+        duration,
+        ease: 'power1.inOut'
+      }, duration);
+    })
+  }
+  const handleMouseLeave = () => {
+    if (locked) return;
+    if (gsapContextRef && gsapContextRef.current) {
+      gsapContextRef.current.revert();
+    }
+    gsapContextRef.current = gsap.context(() => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const emptyPath = calculateSVGPath(w, h, 0, 0);
+      const previewPath = calculateSVGPath(w, h, Math.max(100, w/10), 10);
+      const nextIdx = getNextIdx(currIdx);
+
+      const target = `#hero-cut-${nextIdx}`;
+      const targetBorder = `#hero-border-${nextIdx}`;
+      const tl = gsap.timeline();
+      const duration = 0.7;
+      // hide the preview
+      /**
+       * we hide the preview by first starting at preview shape then animating to nothingness
+       */
+      tl
+      .set(target, {
+        clipPath: `path('${previewPath}')`
+      }, 0)
+      .set(targetBorder, {
+        attr: {
+          d: previewPath
+        }
+      }, 0)
+      .to(target, {
+        clipPath: `path('${emptyPath}')`,
+        duration,
+        ease: 'power1.inOut'
+      }, duration)
+      .to(targetBorder, {
+        attr: {
+          d: emptyPath
+        },
+        duration,
+        ease: 'power1.inOut',
+      }, duration)
+      .to(target, {
+        clipPath: `path('${emptyPath}')`,
+        duration,
+        ease: 'power1.inOut'
+      }, duration)
+      .to(targetBorder, {
+        attr: {
+          d: emptyPath
+        },
+        duration,
+        ease: 'power1.inOut',
+      }, duration)
+    })
+  }
   const handleVideoLoaded = () => {
     setNumVideosLoaded(prev => prev + 1);
   }
+
   useEffect(() => {
-    if (numVideosLoaded === videos.length) {
-      console.log('ALL VIDEO HAVE BEEN LOADED')
+    const resizeHandler = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight
+      })
     }
-  }, [numVideosLoaded]);
+    window.addEventListener('resize', resizeHandler);
+    return () => {
+      window.removeEventListener('resize', resizeHandler);
+    }
+  }, [])
   return (
     <div className="min-h-screen w-full relative">
       <AnimatePresence>
@@ -328,8 +333,7 @@ export const Hero = ({ }) => {
             <motion.div
               exit={{
                 scale: 0,
-                opacity: 0.3,
-                duration: 3
+                opacity: 0.3
               }}
               className="min-h-screen bg-red-500 flex justify-center items-center relative z-[100]">
               <AppLoader/>
@@ -342,8 +346,8 @@ export const Hero = ({ }) => {
           className="hero__hitArea"
           onClick={clickHandler}
           onMouseMove={() => {}}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
+          onMouseEnter={() => handleMouseEnter()}
+          onMouseLeave={() => handleMouseLeave()}
         ></div>
         {
           videos.map((video: VideoType, idx: number) => (
@@ -354,8 +358,6 @@ export const Hero = ({ }) => {
               selectedIdx={currIdx}
               prevIdx={prevIdx}
               videoRefs={videoRefs}
-              svgPath={svgPath}
-              svgPreviewPath={svgPreviewPath}
               handleVideoLoaded={handleVideoLoaded}
             />
           ))
@@ -386,8 +388,6 @@ const HeroItem = ({
   selectedIdx,
   prevIdx,
   videoRefs,
-  svgPath,
-  svgPreviewPath,
   handleVideoLoaded
 }: {
   video: VideoType,
@@ -395,27 +395,20 @@ const HeroItem = ({
   selectedIdx: number,
   prevIdx: number,
   videoRefs: React.MutableRefObject<HTMLDivElement[]>,
-  svgPath: string,
-  svgPreviewPath: string,
   handleVideoLoaded: () => void
 }) => {
   const isPrevious = getNextIdx(idx) === selectedIdx;
-  const emptyPath = calculateSVGPath(window.innerWidth, window.innerHeight, 0, 0);
   let zIndex = 0;
-  let path = emptyPath;
   /**
    * we determine stacking order as follows : previous -> current -> next
    * everything else is not visible so their zIndex can be set to 0. They just have to be less than 1.
    */
   if (isPrevious) {
     zIndex = 0;
-    path = svgPath;
   } else if (idx === selectedIdx || isPrevious) {
     zIndex = 1;
-    path = svgPath;
   } else if (idx === getNextIdx(selectedIdx)) {
     zIndex = 2;
-    path = svgPreviewPath;
   }
   return (
     <div
@@ -436,7 +429,6 @@ const HeroItem = ({
           position: 'relative',
           display: (idx === selectedIdx || prevIdx === idx) ? 'block' : 'none',
           boxSizing: 'border-box',
-          clipPath: `path('${path}')`
         }}
         data-idx={0}
       >
