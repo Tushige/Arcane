@@ -360,7 +360,7 @@ function CharacterGrid() {
         <AppAnimatedTitle
           id="characters-title"
           text="Meet The Cast"
-          className="text-8xl font-bold text-white will-change-transform" 
+          className="text-2xl md:text-6xl lg:text-8xl font-bold text-red-700 will-change-transform" 
         />
 			</div>
 

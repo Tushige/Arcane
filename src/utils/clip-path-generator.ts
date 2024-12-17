@@ -132,6 +132,7 @@ const ClipPathGenerator = ({ focalLength = 800 } = {}) => {
           const multiplied = copied.multiply(scaleVector)
         //   console.log(`multiplied: ${JSON.stringify(multiplied)}`)
           const rotated = multiplied.applyEuler(rotation);
+
         //   console.log(`rotated: ${JSON.stringify(rotated)}`)
         });
         // Update the projection of the vertices

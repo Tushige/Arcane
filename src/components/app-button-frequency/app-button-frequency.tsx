@@ -95,7 +95,7 @@ export const AppButtonFrequency = ({onActive, onInActive}: AppButtonFrequencyPro
           </filter>
         </defs>
       </svg>
-      <button ref={buttonRef} onClick={clickHander} className="button button--10  group hover:bg-yellow-400 text-black">
+      <button ref={buttonRef} onClick={clickHander} className="button button--10 font-general font-black group hover:bg-yellow-400 text-black">
         <span className="button__text">{isPlaying ? 'Pause' : 'Play'}</span>
         <span ref={btnBg} className="button__bg bg-yellow-400 group-hover:bg-yellow-100"></span>
       </button>

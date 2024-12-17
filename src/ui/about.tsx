@@ -192,7 +192,7 @@ const About = () => {
             </svg>
             <div className="absolute top-[50%] right-[10%] z-[1000]">
               <AppRevealingText
-                className="text-white text-2xl font-medium uppercase tracking-wide font-p2p"
+                className="text-white text-sm lg:text-2xl font-medium uppercase tracking-wide font-p2p"
                 containerId={'mainImagePath'}
               />
             </div>

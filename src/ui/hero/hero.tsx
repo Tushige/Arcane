@@ -3,10 +3,10 @@ import { ScrollTrigger } from "gsap/all";
 import './zentry-hero.css';
 import { useEffect, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
-import AppAnimatedButton from '../../components/app-animated-button';
 import { calculateFullScreenSVGPath, calculateSVGPath } from '../../utils/util';
 import { AppLoader } from '../../components/app-loader/app-loader';
 import { AnimatePresence, motion } from 'motion/react';
+import { AppAnimatedButton2 } from '../../components/app-animated-button-2';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -362,21 +362,27 @@ export const Hero = ({ }) => {
             />
           ))
         }
-      <div className="px-5 sm:px-10 z-[100] relative">
-        <h1 className="special-font text-left uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-white ">
-          Arca<b>n</b>e
-        </h1>
-        <p className="text-left font-bold text-white text-sm sm:text-xl lg:text-2xl">
-          Season 2 Out NOW
-        </p>
-        <AppAnimatedButton text="WATCH Now"/>
+        <div className="p-10 sm:px-10 z-[100] relative mt-[100px] sm:mt-0">
+          <h1 className="special-font text-left uppercase font-zentry text-9xl font-black sm:right-10 lg:text-[12rem] text-white ">
+            Arca<b>n</b>e
+          </h1>
+          <p className="text-left font-general font-bold text-white text-sm sm:text-xl lg:text-2xl mb-8">
+            Season 2 Out NOW
+          </p>
+          <AppAnimatedButton2 text="WATCH TRAILER"/>
+        </div>
+        
+        <h2 className="absolute bottom-5 right-10 uppercase sm:right-10 text-[#E50914] z-[10] flex flex-col gap-2">
+          <span className="text-white font-general tracking-wide text-sm uppercase">only on</span>
+          <span className="font-zentry text-5xl font-black sm:text-7xl md:text-9xl lg:text-[12rem]">WEBFLIX</span>
+        </h2>
       </div>
-      <h2 className="absolute bottom-5 right-5 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-[#E50914] z-[10]">
+      <h2 className="absolute bottom-5 right-10 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-black z-0">
         WEBFLIX
       </h2>
-      </div>
-      <h2 className="absolute bottom-5 right-5 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-black z-0">
-        WEBFLIX
+      <h2 className="absolute bottom-5 right-10 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-black z-0 flex flex-col gap-2">
+        <span className="text-white font-general tracking-wide text-sm uppercase">only on</span>
+        <span className="font-zentry text-5xl font-black sm:text-7xl md:text-9xl lg:text-[12rem]">WEBFLIX</span>
       </h2>
     </div>
   );
