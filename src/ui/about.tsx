@@ -211,7 +211,7 @@ const About = () => {
            * on mouse hover, we shift their position to create a parallax fx
            */}
           <div
-            className="frame__outer size-full absolute top-0 left-0"
+            className="frame__outer size-full absolute top-0 left-0 flex justify-center"
             style={{
               transform: `translate3d(${-translateX.current}px, ${-translateY.current}px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.3)`
             }}
@@ -220,7 +220,7 @@ const About = () => {
               src="img/zentry/stones.webp"
               width="100%"
               height="100%"
-              className="absolute top-[10%] left-0 object-cover object-center"
+              className="absolute top-[10%] object-cover object-center max-w-[1600px]"
             />
           </div>
         </div>

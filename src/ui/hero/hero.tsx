@@ -7,6 +7,7 @@ import { calculateFullScreenSVGPath, calculateSVGPath } from '../../utils/util';
 import { AppLoader } from '../../components/app-loader/app-loader';
 import { AnimatePresence, motion } from 'motion/react';
 import { AppAnimatedButton2 } from '../../components/app-animated-button-2';
+import { AppLoaderTwo } from '../../components/app-loader-two/app-loader-two';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -336,7 +337,7 @@ export const Hero = ({ }) => {
                 opacity: 0.3
               }}
               className="min-h-screen bg-red-500 flex justify-center items-center relative z-[100]">
-              <AppLoader/>
+              <AppLoaderTwo/>
             </motion.div>
           )
         }
