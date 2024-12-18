@@ -26,7 +26,7 @@ export const AppNavBar = () => {
         className="hidden"
         src="/audio/Arcane_ Season_2 _Official_Trailer.mp3"
         loop
-        playsinline="true"
+        playsInline={true}
       />
       {
         isReady && (

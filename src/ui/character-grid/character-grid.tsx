@@ -112,6 +112,7 @@ function CharacterGrid() {
   const [currentIdx, setCurrentIdx] = useState(-1);
   const gridImagesRef = useRef(Array(images.length));
   const isInView = useInView(gridImagesContainerRef, { once: true })
+  const [isTitleVisible, setIsTitleVisible] = useState(true);
 
   const showSlider = (idx: number) => {
     if (isAnimating || mode === 'slider') return;
@@ -157,11 +158,11 @@ function CharacterGrid() {
       });
     }, 'start')
     // hide the main title
-    .to('#characters-title', {
-      y: '-100%'
-    }, 'start')
     .set(SLIDER_TITLE_EL, {
-      opacity: 1
+      opacity: 1,
+      onComplete: () => {
+        setIsTitleVisible(false);
+      }
     }, 'start')
     // show the name tag
     .fromTo([`.name-tag-${idx}`], {
@@ -246,13 +247,13 @@ function CharacterGrid() {
       filter: 'grayscale(100%)',
       scale: 1.3,
     }, 'start+=1')
-    // show the main title
-    .to('#characters-title', {
-      y: '0%',  
-    }, 'start+=1')
     .to([GRID_LABELS], {
-      yPercent: 0
+      yPercent: 0,
+      onComplete: () => {
+        setIsTitleVisible(true);
+      }
     }, 'start+=1')
+
   }
 
   const onMouseEnterHandler = (e) => {
@@ -360,6 +361,7 @@ function CharacterGrid() {
         <AppAnimatedTitle
           id="characters-title"
           text="Meet The Cast"
+          hidden={!isTitleVisible}
           className="text-2xl md:text-6xl lg:text-8xl font-bold text-red-700 will-change-transform" 
         />
 			</div>

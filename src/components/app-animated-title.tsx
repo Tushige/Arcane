@@ -4,10 +4,11 @@ import {motion} from 'motion/react'
 
 type props = {
   text: string,
-  className?: string
+  className?: string,
+  hidden: boolean
 }
 
-export const AppAnimatedTitle = ({text, className, ...props}: props) => {
+export const AppAnimatedTitle = ({text, hidden, className, ...props}: props) => {
   return (
     <motion.h2
       {...props}
@@ -17,7 +18,7 @@ export const AppAnimatedTitle = ({text, className, ...props}: props) => {
         opacity: 1  
       }}
       whileInView={{
-        y:0,
+        y: hidden ? '-100%' : 0,
         opacity: 1,
       }}
       transition={{

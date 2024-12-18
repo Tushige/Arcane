@@ -4,7 +4,6 @@ import './zentry-hero.css';
 import { useEffect, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import { calculateFullScreenSVGPath, calculateSVGPath } from '../../utils/util';
-import { AppLoader } from '../../components/app-loader/app-loader';
 import { AnimatePresence, motion } from 'motion/react';
 import { AppAnimatedButton2 } from '../../components/app-animated-button-2';
 import { AppLoaderTwo } from '../../components/app-loader-two/app-loader-two';
@@ -18,19 +17,19 @@ type VideoType = {
 
 const videos = [
   {
-    src: 'videos-arcane/hero-cut-0.mp4',
+    src: '/videos-arcane/hero-cut-0.mp4',
     poster: 'videos-arcane/hero-cut-0-poster.png'
   },
   {
-    src: 'videos-arcane/hero-cut-1.mp4',
+    src: '/videos-arcane/hero-cut-1.mp4',
     poster: 'videos-arcane/hero-cut-1-poster.png'
   },
   {
-    src: 'videos-arcane/hero-cut-2.mp4',
+    src: '/videos-arcane/hero-cut-2.mp4',
     poster: 'videos-arcane/hero-cut-2-poster.png'
   },
   {
-    src: 'videos-arcane/hero-cut-3.mp4',
+    src: '/videos-arcane/hero-cut-3.mp4',
     poster: 'videos-arcane/hero-cut-3-poster.png'
   },
 ];
