@@ -1,5 +1,5 @@
 import { Clapperboard } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createClipPathGenerator } from "../utils/clip-path-generator";
 import { useSpring, motion } from "motion/react";
 import { Vector3, Euler } from "three";
@@ -30,7 +30,7 @@ export const AppAnimatedButton2 = ({text}: {text: string}) => {
   const [currentRotationY, setCurrentRotationY] = useState(rotationY.get());
   const [currentRotationZ, setCurrentRotationZ] = useState(rotationZ.get());
 
-  const borderRadius = useSpring(5, spring);
+  const borderRadius = useSpring(10, spring);
 
   useEffect(() => {
     const unsubScaleX = scaleX.on('change', (val) => setCurrentScaleX(val));
@@ -63,11 +63,17 @@ export const AppAnimatedButton2 = ({text}: {text: string}) => {
     setButtonPath(generator.current.path.value);
   }, [currentScaleX, currentScaleY, currentRotationX, currentRotationY])
 
-  useEffect(() => {
-    const rect = buttonRef.current.getBoundingClientRect();
-    scaleX.set(rect.width)
-    scaleY.set(rect.height * 0.7);
-  }, [])
+  useLayoutEffect(() => {
+    if (!buttonRef.current) return;
+    const calculateDimension = () => {
+      const rect = buttonRef.current.getBoundingClientRect();
+      borderRadius.jump(10);
+      scaleX.set(rect.width * 1)
+      scaleY.set(rect.height * 0.7);
+    }
+    calculateDimension();
+    setTimeout(() => calculateDimension(), 1000);
+  }, [buttonRef.current])
 
   const onMouseEnter = () => {
     const rect = buttonRef.current.getBoundingClientRect();
@@ -90,15 +96,11 @@ export const AppAnimatedButton2 = ({text}: {text: string}) => {
     rotationZ.set(0);
     borderRadius.set(20);
   }
-  const variants = {
-    hover: {
-      y: '-100%'
-    }
-  }
+
   return (
     <motion.button
       ref={buttonRef}
-      className="btnMain textCaptionBtn hero__cta gap-4 items-center outline-none"
+      className="btnMain textCaptionBtn hero__cta gap-4 items-center outline-none box-border"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       whileHover="hover"
@@ -202,7 +204,7 @@ export const AppAnimatedButton2 = ({text}: {text: string}) => {
       </div>
 
       <div className="btnMain__shape">
-        <svg className="btnMain__shapeIcon" stroke-width="1">
+        <svg className="btnMain__shapeIcon" strokeWidth="1">
           <path
             ref={pathRef}
             className="btnMain__shapePath"

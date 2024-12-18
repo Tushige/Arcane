@@ -363,13 +363,13 @@ export const Hero = ({ }) => {
           ))
         }
         <div className="p-10 sm:px-10 z-[100] relative mt-[100px] sm:mt-0">
-          <h1 className="special-font text-left uppercase font-zentry text-9xl font-black sm:right-10 lg:text-[12rem] text-white ">
+          <h1 className="special-font text-left uppercase font-zentry text-7xl font-black sm:right-10 lg:text-[12rem] text-white ">
             Arca<b>n</b>e
           </h1>
           <p className="text-left font-general font-bold text-white text-sm sm:text-xl lg:text-2xl mb-8">
             Season 2 Out NOW
           </p>
-          <AppAnimatedButton2 text="WATCH TRAILER"/>
+          <AppAnimatedButton2 text="WATCH NOW"/>
         </div>
         
         <h2 className="absolute bottom-5 right-10 uppercase sm:right-10 text-[#E50914] z-[10] flex flex-col gap-2">

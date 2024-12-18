@@ -1,8 +1,7 @@
 import { motion } from "motion/react";
 import useScrollDirection from "../hooks/use-scroll-direction"
 import { AppButtonFrequency } from "./app-button-frequency/app-button-frequency"
-import { useEffect, useRef, useState } from "react";
-import {Howl} from 'howler';
+import { useRef, useState } from "react";
 
 export const AppNavBar = () => {
   const audioElementRef = useRef();
@@ -24,7 +23,7 @@ export const AppNavBar = () => {
         ref={audioElementRef}
         onCanPlayThrough={() => setIsReady(true)}
         className="hidden"
-        src="/audio/Arcane_ Season_2 _Official_Trailer.mp3"
+        src="/audio/Arcane_ Season_2_Official_Trailer.mp3"
         loop
         playsInline={true}
       />
@@ -38,7 +37,7 @@ export const AppNavBar = () => {
               duration: 0.3,
               ease: 'easeOut'
             }}
-            className="fixed right-0 top-0 p-8 z-10"
+            className="fixed right-10 top-10 z-10"
           >
             <AppButtonFrequency onActive={onActive} onInActive={onInActive}/>
           </motion.div>

@@ -148,7 +148,7 @@ const About = () => {
           y: titleY
         }}
       >
-        <AppAnimatedTitle animated={true} text="Welcome to Piltover" className="text-text-primary"/>
+        <AppAnimatedTitle text="Welcome to Piltover" className="text-text-primary"/>
         <AppAnimatedText animated={true} text="The City of Progress" className="text-text-primary"/>
       </motion.div>
 

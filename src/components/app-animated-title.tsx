@@ -5,7 +5,7 @@ import {motion} from 'motion/react'
 type props = {
   text: string,
   className?: string,
-  hidden: boolean
+  hidden?: boolean
 }
 
 export const AppAnimatedTitle = ({text, hidden, className, ...props}: props) => {

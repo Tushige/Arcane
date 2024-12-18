@@ -366,8 +366,10 @@ function CharacterGrid() {
         />
 			</div>
 
-			<div className={`controls ${mode === 'slider' ? 'controls--open' : ''}`}>
-				<button className="unbutton close border-solid border-2 rounded-full text-red-500 border-red-500" onClick={hideSlider}>X</button>
+			<div
+        className={`flex justify-center controls ${mode === 'slider' ? 'controls--open' : ''}`}
+      >
+				<button className="unbutton font-general close border-solid border-2 rounded-full text-black border-black bg-red-500" onClick={hideSlider}>X</button>
 			</div>
 
 		</section>
