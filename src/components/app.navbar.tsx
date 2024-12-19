@@ -23,7 +23,7 @@ export const AppNavBar = () => {
         ref={audioElementRef}
         onCanPlayThrough={() => setIsReady(true)}
         className="hidden"
-        src="/audio/Arcane_ Season_2_Official_Trailer.mp3"
+        src="/audio/Arcane_Season_2_Official_Trailer.mp3"
         loop
         playsInline={true}
       />
@@ -37,7 +37,7 @@ export const AppNavBar = () => {
               duration: 0.3,
               ease: 'easeOut'
             }}
-            className="fixed right-10 top-10 z-10"
+            className="fixed right-5 top-5 sm:right-10 sm:top-10 z-10"
           >
             <AppButtonFrequency onActive={onActive} onInActive={onInActive}/>
           </motion.div>

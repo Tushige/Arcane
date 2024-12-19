@@ -3,10 +3,12 @@ import { ScrollTrigger } from "gsap/all";
 import './zentry-hero.css';
 import { useEffect, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
-import { calculateFullScreenSVGPath, calculateSVGPath } from '../../utils/util';
+import { calculateFullScreenSVGPath, calculateSVGPath, cn, isMobile } from '../../utils/util';
 import { AnimatePresence, motion } from 'motion/react';
 import { AppAnimatedButton2 } from '../../components/app-animated-button-2';
 import { AppLoaderTwo } from '../../components/app-loader-two/app-loader-two';
+import useViewportDimension from '../../hooks/use-viewport-dimensions';
+import "./hero.css"
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,10 +41,8 @@ const getNextIdx = (idx: number) => {
 }
 
 export const Hero = ({ }) => {
-  const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight
-  });
+  const containerRef = useRef();
+  const windowSize = useViewportDimension();
   const [prevIdx, setPrevIdx] = useState(-1);
   const [currIdx, setCurrIdx] = useState(0);
   const [numVideosLoaded, setNumVideosLoaded] = useState(0);
@@ -71,11 +71,11 @@ export const Hero = ({ }) => {
    * After the current video expands, the next video expands to the preview shape
    */
   useGSAP(() => {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const w = windowSize.width;
+    const h = windowSize.height;
 
-    const fullScreenPath = calculateFullScreenSVGPath(window.innerWidth, window.innerHeight)
-    const emptyPath = calculateSVGPath(window.innerWidth, window.innerHeight, 0, 0);
+    const fullScreenPath = calculateFullScreenSVGPath(w, h)
+    const emptyPath = calculateSVGPath(w, h, 0, 0);
     const previewPath = calculateSVGPath(w, h, Math.max(100, w/10)-10, 10);
 
     const prevTarget = `#hero-cut-${prevIdx}`;
@@ -85,7 +85,10 @@ export const Hero = ({ }) => {
     const prevTargetBorder = `#hero-border-${prevIdx}`;
     const currTargetBorder = `#hero-border-${currIdx}`;
     const nextTargetBorder = `#hero-border-${getNextIdx(currIdx)}`;
-
+    if (currIdx < 0 || currIdx >= videos.length) {
+      console.error('requested video is invalid. Cannot play!')
+      return;
+    }
     videoRefs.current[currIdx].play();
     setLocked(true);
     /**
@@ -202,8 +205,8 @@ export const Hero = ({ }) => {
       gsapContextRef.current.revert();
     }
     gsapContextRef.current = gsap.context(() => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const w = windowSize.width;
+      const h = windowSize.height;
       const emptyPath = calculateSVGPath(w, h, 0, 0);
       const previewPath = calculateSVGPath(w, h, Math.max(100, w/10), 10);
 
@@ -260,8 +263,8 @@ export const Hero = ({ }) => {
       gsapContextRef.current.revert();
     }
     gsapContextRef.current = gsap.context(() => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const w = windowSize.width;
+      const h = windowSize.height;
       const emptyPath = calculateSVGPath(w, h, 0, 0);
       const previewPath = calculateSVGPath(w, h, Math.max(100, w/10), 10);
       const nextIdx = getNextIdx(currIdx);
@@ -309,24 +312,14 @@ export const Hero = ({ }) => {
       }, duration)
     })
   }
+
   const handleVideoLoaded = () => {
+    console.log(`video loaded: ${numVideosLoaded}`)
     setNumVideosLoaded(prev => prev + 1);
   }
 
-  useEffect(() => {
-    const resizeHandler = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
-    }
-    window.addEventListener('resize', resizeHandler);
-    return () => {
-      window.removeEventListener('resize', resizeHandler);
-    }
-  }, [])
   return (
-    <div className="min-h-screen w-full relative">
+    <div id="hero-container" ref={containerRef} className="size-full min-h-screen relative">
       <AnimatePresence>
         {
           numVideosLoaded < videos.length && (
@@ -362,7 +355,7 @@ export const Hero = ({ }) => {
             />
           ))
         }
-        <div className="p-10 sm:px-10 z-[100] relative mt-[100px] sm:mt-0">
+        <div className="p-4 sm:px-10 z-[100] relative">
           <h1 className="special-font text-left uppercase font-zentry text-7xl font-black sm:right-10 lg:text-[12rem] text-white ">
             Arca<b>n</b>e
           </h1>
@@ -372,15 +365,17 @@ export const Hero = ({ }) => {
           <AppAnimatedButton2 text="WATCH NOW"/>
         </div>
         
-        <h2 className="absolute bottom-5 right-10 uppercase sm:right-10 text-[#E50914] z-[10] flex flex-col gap-2">
+        <h2
+          className={cn(
+            `bottom-text uppercase sm:right-10 text-[#E50914] z-[10] flex flex-col gap-2`, 
+            {"pb-[100px]": isMobile()}
+            )}
+          >
           <span className="text-white font-general tracking-wide text-sm uppercase">only on</span>
           <span className="font-zentry text-5xl font-black sm:text-7xl md:text-9xl lg:text-[12rem]">WEBFLIX</span>
         </h2>
       </div>
-      <h2 className="absolute bottom-5 right-10 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-black z-0">
-        WEBFLIX
-      </h2>
-      <h2 className="absolute bottom-5 right-10 uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-black z-0 flex flex-col gap-2">
+      <h2 className={cn(`bottom-text uppercase font-zentry text-5xl font-black sm:right-10 sm:text-7xl md:text-9xl lg:text-[12rem] text-white z-0 flex flex-col gap-2`, {"pb-[100px]": isMobile()})}>
         <span className="text-white font-general tracking-wide text-sm uppercase">only on</span>
         <span className="font-zentry text-5xl font-black sm:text-7xl md:text-9xl lg:text-[12rem]">WEBFLIX</span>
       </h2>
@@ -452,8 +447,9 @@ const HeroItem = ({
             ref={(el) => videoRefs.current[idx] = el}
             className="video asset"
             muted
-            playsInline
             loop
+            autoPlay
+            playsInline
             preload="metadata"
             poster={video.poster}
             src={video.src}

@@ -43,7 +43,8 @@ const About = () => {
   const scaleX = useSpring(useTransform(scrollYProgress, [0, 0.9], [DEFAULT_SCALE.x, window.innerWidth]),{ damping: 20, stiffness: 100 })
   const scaleY = useSpring(useTransform(scrollYProgress, [0, 0.9], [DEFAULT_SCALE.y, window.innerHeight]), {damping: 20, stiffness: 100});
 
-  const titleY = useSpring(useTransform(scrollYProgress, [0.9, 1], [0, -300]), {damping: 20, stiffness: 100});
+  const titleY = useSpring(0, {damping: 20, stiffness: 100});
+  
   const rotationX = useSpring(useTransform(() => {
     const scrollYProgressValue = scrollYProgress.get();
     let mouseRotation = dx.current;
@@ -76,6 +77,13 @@ const About = () => {
    * update states based on motion value changes
    */
   useEffect(() => { 
+    const unsubScrollY = scrollYProgress.on('change', (val) => {
+      if (val === 1) {
+        titleY.set(-300);
+      } else {
+        titleY.set(0);
+      }
+    })
     const unsubscribeScaleX = scaleX.on('change', (latestValue) => {
       setCurrentScaleX(latestValue);
     });
@@ -88,6 +96,7 @@ const About = () => {
     const unsubscribeRotationX = rotationX.on('change', v => setCurrentRotationX(v))
     const unsubscribeRotationY = rotationY.on('change', v => setCurrentRotationY(v))
     return () => {
+      unsubScrollY();
       unsubscribeScaleX();
       unsubscribeScaleY();
       unsubscribeRotationX();
@@ -141,9 +150,9 @@ const About = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative min-h-screen h-[300lvh]">
+    <div ref={containerRef} className="w-full relative min-h-screen h-[300lvh]">
       <motion.div
-        className="sticky top-0 z-[0]"
+        className="sticky top-0 z-[0] p-[1.5rem]"
         style={{
           y: titleY
         }}
@@ -153,7 +162,7 @@ const About = () => {
       </motion.div>
 
       <div className="intro__frameWrap h-[100lvh] w-full sticky top-0">
-        <div className="frame size-full absolute top-0 left-0">
+        <div className="frame size-full absolute top-0 left-0 overflow-hidden">
 
           {/**
            * the outer container for the main image
@@ -211,9 +220,9 @@ const About = () => {
            * on mouse hover, we shift their position to create a parallax fx
            */}
           <div
-            className="frame__outer size-full absolute top-0 left-0 flex justify-center"
+            className="frame__outer size-full absolute top-0 left-0 flex justify-center overflow-hidden"
             style={{
-              transform: `translate3d(${-translateX.current}px, ${-translateY.current}px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.3)`
+              transform: `translate3d(${-translateX.current}px, ${-translateY.current}px, 0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)`
             }}
           >
             <img 

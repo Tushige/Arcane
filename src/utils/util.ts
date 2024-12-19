@@ -46,79 +46,8 @@ export const calculateFullScreenSVGPath = (vw: number, vh: number) => {
   return path;
 }
 
-/**
- * SALVAGED
- */
-
-// Function to generate an SVG path based on vertices and border radius
-export function generatePath(vertices, borderRadius) {
-  const pathCommands = [];
-  const numVertices = vertices.length;
-
-  for (let i = 0; i < numVertices; i++) {
-      const prevVertex = i > 0 ? vertices[i - 1] : vertices[numVertices - 1];
-      const currentVertex = vertices[i];
-      const nextVertex = i < numVertices - 1 ? vertices[i + 1] : vertices[0];
-
-      // Calculate the direction vectors between vertices
-      const prevToCurrent = {
-          x: prevVertex.x - currentVertex.x,
-          y: prevVertex.y - currentVertex.y
-      };
-      const currentToNext = {
-          x: nextVertex.x - currentVertex.x,
-          y: nextVertex.y - currentVertex.y
-      };
-
-      // Calculate lengths of the edges
-      const prevToCurrentLength = Math.sqrt(prevToCurrent.x ** 2 + prevToCurrent.y ** 2);
-      const currentToNextLength = Math.sqrt(currentToNext.x ** 2 + currentToNext.y ** 2);
-
-      // Calculate the angle between edges
-      const crossProduct = prevToCurrent.x * currentToNext.y - prevToCurrent.y * currentToNext.x;
-      const dotProduct = prevToCurrent.x * currentToNext.x + prevToCurrent.y * currentToNext.y;
-      const angleBetween = Math.atan2(crossProduct, dotProduct);
-      const angle = Math.PI - Math.abs(angleBetween);
-
-      // Adjust border radius based on the angle
-      if (borderRadius / Math.sin(angle / 2) * Math.cos(angle / 2) > Math.min(prevToCurrentLength / 2, currentToNextLength / 2)) {
-          borderRadius = Math.min(prevToCurrentLength, currentToNextLength) / (2 * Math.cos(angle / 2));
-      }
-
-      // Calculate control points for the curve
-      const midpointPrevCurrent = {
-          x: (prevVertex.x + currentVertex.x) / 2,
-          y: (prevVertex.y + currentVertex.y) / 2
-      };
-      const midpointCurrentNext = {
-          x: (currentVertex.x + nextVertex.x) / 2,
-          y: (currentVertex.y + nextVertex.y) / 2
-      };
-
-      const distancePrevToMid = Math.sqrt((currentVertex.x - midpointPrevCurrent.x) ** 2 + (currentVertex.y - midpointPrevCurrent.y) ** 2);
-      const distanceNextToMid = Math.sqrt((nextVertex.x - midpointCurrentNext.x) ** 2 + (nextVertex.y - midpointCurrentNext.y) ** 2);
-
-      const scalePrevToMid = borderRadius / distancePrevToMid;
-      const scaleNextToMid = borderRadius / distanceNextToMid;
-
-      // Calculate the adjusted control points
-      const controlPointPrev = {
-          x: currentVertex.x + prevToCurrent.x * scalePrevToMid,
-          y: currentVertex.y + prevToCurrent.y * scalePrevToMid
-      };
-      const controlPointNext = {
-          x: currentVertex.x + currentToNext.x * scaleNextToMid,
-          y: currentVertex.y + currentToNext.y * scaleNextToMid
-      };
-
-      // Add path commands for this segment
-      if (i === 0) {
-          pathCommands.push(`M${controlPointPrev.x},${controlPointPrev.y}`);
-      }
-      pathCommands.push(`L${controlPointPrev.x},${controlPointPrev.y}`);
-      pathCommands.push(`Q${currentVertex.x},${currentVertex.y},${controlPointNext.x},${controlPointNext.y}`);
-  }
-
-  pathCommands.push("Z");
-  return pathCommands.join(" ");
+export const isMobile = () => {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  // Check if the user agent matches common mobile devices
+  return /android/i.test(userAgent) || /iPhone|iPad|iPod/i.test(userAgent);
 }

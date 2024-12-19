@@ -6,7 +6,7 @@ import { Hero } from './ui/hero/hero';
 
 function App() {
   return (
-    <main className="min-h-screen bg-[#141414]">
+    <main className="size-full min-h-screen bg-[#141414]">
       <Hero />
       <div className="mt-[12rem]" />
       <About/>  

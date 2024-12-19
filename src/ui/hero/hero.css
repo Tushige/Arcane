@@ -1,0 +1,5 @@
+.bottom-text {
+  position: absolute;
+  bottom: env(safe-area-inset-bottom);
+  right: 10px;
+}

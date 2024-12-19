@@ -186,9 +186,13 @@ function CharacterGrid() {
       scale: 1,
       stagger: 0.02
     }, 'start')
-    setCurrentIdx(idx);
-  }
 
+    setCurrentIdx(idx);
+    gridImagesContainerRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
   const hideSlider = () => {
     if (isAnimating || mode === 'grid') return;
     setIsAnimating(true);
@@ -357,12 +361,12 @@ function CharacterGrid() {
         }
 			</div>
 
-			<div className="intro-title overflow-hidden">
+			<div className="intro-title">
         <AppAnimatedTitle
           id="characters-title"
           text="Meet The Cast"
           hidden={!isTitleVisible}
-          className="text-2xl md:text-6xl lg:text-8xl font-bold text-red-700 will-change-transform" 
+          className="text-4xl md:text-6xl lg:text-8xl font-bold text-red-700 will-change-transform" 
         />
 			</div>
 

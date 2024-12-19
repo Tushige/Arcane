@@ -15,11 +15,11 @@ export const AppAnimatedTitle = ({text, hidden, className, ...props}: props) => 
       className={cn("font-general text-sm md:text-md font-medium uppercase tracking-wide", className)}
       initial={{
         y: 50,
-        opacity: 1  
+        opacity: 0
       }}
       whileInView={{
         y: hidden ? '-100%' : 0,
-        opacity: 1,
+        opacity: hidden ? 0 : 1,
       }}
       transition={{
         duration: 0.3,
